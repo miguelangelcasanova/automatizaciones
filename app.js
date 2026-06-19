@@ -139,16 +139,17 @@ function updateScreen() {
   const fault = $('#faultMode').value;
   const screen = $('#screen');
   const pattern = $('#videoPattern');
+  const hasMainPower = powered && fault !== 'no-power';
 
   pattern.className = `video-pattern ${signal}`;
-  screen.style.setProperty('--brightness', powered ? brightness / 100 : 0);
+  screen.style.setProperty('--brightness', hasMainPower ? brightness / 100 : 0);
   screen.style.setProperty('--contrast', 0.65 + contrast / 100);
-  screen.className = `screen ${powered ? '' : 'off'} ${fault !== 'none' ? fault : ''}`;
+  screen.className = `screen ${hasMainPower ? '' : 'off'} ${fault !== 'none' ? fault : ''}`;
   screen.style.backgroundColor = temp === 'warm' ? '#1b120d' : temp === 'cool' ? '#071525' : '#05070d';
   $('#brightnessOutput').textContent = `${brightness}%`;
   $('#contrastOutput').textContent = `${contrast}%`;
-  $('#backlightValue').textContent = fault === 'no-backlight' || !powered ? '0%' : `${brightness}%`;
-  $('#osd').textContent = powered ? `${signal.toUpperCase()} · 1080p · ${fault === 'bad-sync' ? '48 Hz' : '60 Hz'}` : 'Sin stand-by';
+  $('#backlightValue').textContent = fault === 'no-backlight' || !hasMainPower ? '0%' : `${brightness}%`;
+  $('#osd').textContent = hasMainPower ? `${signal.toUpperCase()} · 1080p · ${fault === 'bad-sync' ? '48 Hz' : '60 Hz'}` : (powered ? 'Sin alimentación principal' : 'Sin stand-by');
 }
 
 function updateFault() {
