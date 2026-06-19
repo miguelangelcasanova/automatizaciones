@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador didáctico de monitor</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Mantenimiento de Equipos de Vídeo</p>
+        <h1>Simulador funcional de monitor</h1>
+        <p>
+          Herramienta didáctica para visualizar cómo se transforman alimentación,
+          vídeo, temporización, retroiluminación y control hasta generar una imagen en pantalla.
+        </p>
+      </div>
+      <div class="status-card" aria-live="polite">
+        <span class="status-dot" id="globalStatusDot"></span>
+        <div>
+          <strong id="globalStatus">Monitor operativo</strong>
+          <small id="globalStatusDetail">Señales dentro de rango</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="monitor-panel" aria-labelledby="monitorTitle">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Vista funcional</p>
+            <h2 id="monitorTitle">Monitor LCD / LED</h2>
+          </div>
+          <button id="powerButton" class="power-button" type="button" aria-pressed="true">⏻ Encendido</button>
+        </div>
+
+        <div class="monitor-shell">
+          <div class="bezel">
+            <div class="screen" id="screen">
+              <div class="scanline"></div>
+              <div class="pixel-grid"></div>
+              <div class="video-pattern" id="videoPattern"></div>
+              <div class="fault-overlay" id="faultOverlay"></div>
+              <div class="osd" id="osd">HDMI 1080p · 60 Hz</div>
+            </div>
+          </div>
+          <div class="stand"></div>
+          <div class="base"></div>
+        </div>
+
+        <div class="measurements" aria-label="Medidas simuladas">
+          <article><span>Fuente</span><strong id="voltageValue">12.0 V</strong></article>
+          <article><span>Frecuencia H</span><strong id="hFreqValue">67.5 kHz</strong></article>
+          <article><span>Frecuencia V</span><strong id="vFreqValue">60 Hz</strong></article>
+          <article><span>Backlight</span><strong id="backlightValue">86%</strong></article>
+        </div>
+      </section>
+
+      <aside class="controls" aria-labelledby="controlsTitle">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Laboratorio</p>
+            <h2 id="controlsTitle">Controles de simulación</h2>
+          </div>
+        </div>
+
+        <label>
+          Señal de entrada
+          <select id="inputSignal">
+            <option value="bars">Barras de color</option>
+            <option value="grid">Rejilla de convergencia</option>
+            <option value="gradient">Gradiente RGB</option>
+            <option value="noise">Ruido / sin sintonía</option>
+          </select>
+        </label>
+
+        <label>
+          Brillo de retroiluminación <output id="brightnessOutput">86%</output>
+          <input id="brightness" type="range" min="0" max="100" value="86" />
+        </label>
+
+        <label>
+          Contraste del panel <output id="contrastOutput">72%</output>
+          <input id="contrast" type="range" min="0" max="100" value="72" />
+        </label>
+
+        <label>
+          Temperatura de color
+          <select id="colorTemp">
+            <option value="cool">Fría (9300 K)</option>
+            <option value="neutral" selected>Neutra (6500 K)</option>
+            <option value="warm">Cálida (5000 K)</option>
+          </select>
+        </label>
+
+        <label>
+          Avería para analizar
+          <select id="faultMode">
+            <option value="none">Sin avería</option>
+            <option value="no-power">Fuente principal caída</option>
+            <option value="no-backlight">Inverter / driver LED sin salida</option>
+            <option value="bad-sync">Pérdida de sincronismo</option>
+            <option value="tcon">Fallo de T-CON / LVDS</option>
+            <option value="capacitors">Rizado por condensadores ESR alta</option>
+          </select>
+        </label>
+
+        <div class="button-row">
+          <button id="playButton" type="button">▶ Animar flujo</button>
+          <button id="stepButton" type="button">Paso a paso</button>
+          <button id="resetButton" type="button">Reiniciar</button>
+        </div>
+      </aside>
+
+      <section class="blocks-panel" aria-labelledby="blocksTitle">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Arquitectura interna</p>
+            <h2 id="blocksTitle">Bloques funcionales y conexiones</h2>
+          </div>
+          <span id="animationLabel" class="badge">Flujo detenido</span>
+        </div>
+
+        <div class="block-diagram" id="blockDiagram" role="img" aria-label="Diagrama de bloques funcionales de un monitor">
+          <svg class="connections" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true">
+            <path data-link="ac-psu" d="M85 125 H250" />
+            <path data-link="psu-main" d="M330 125 H470" />
+            <path data-link="main-tcon" d="M550 125 H705" />
+            <path data-link="tcon-panel" d="M785 125 H920" />
+            <path data-link="psu-backlight" d="M290 170 V355 H470" />
+            <path data-link="main-backlight" d="M510 170 V355" />
+            <path data-link="backlight-panel" d="M555 355 H920 V175" />
+            <path data-link="input-main" d="M85 355 H470" />
+            <path data-link="mcu-main" d="M510 445 V175" />
+            <path data-link="keys-mcu" d="M85 445 H470" />
+          </svg>
+
+          <article class="block source" data-block="ac" style="--x: 2%; --y: 12%">
+            <strong>Red AC</strong><span>230 Vca · filtro EMI</span>
+          </article>
+          <article class="block power" data-block="psu" style="--x: 25%; --y: 12%">
+            <strong>Fuente SMPS</strong><span>Stand-by, PFC, 12/24 V</span>
+          </article>
+          <article class="block processor" data-block="main" style="--x: 48%; --y: 12%">
+            <strong>Placa main</strong><span>Scaler, ADC, HDMI, OSD</span>
+          </article>
+          <article class="block timing" data-block="tcon" style="--x: 71%; --y: 12%">
+            <strong>T-CON</strong><span>LVDS/eDP → filas y columnas</span>
+          </article>
+          <article class="block panel-block" data-block="panel" style="--x: 91%; --y: 12%">
+            <strong>Panel LCD</strong><span>TFT + filtros RGB</span>
+          </article>
+          <article class="block input" data-block="input" style="--x: 2%; --y: 58%">
+            <strong>Entrada vídeo</strong><span>HDMI / DP / VGA</span>
+          </article>
+          <article class="block light" data-block="backlight" style="--x: 48%; --y: 58%">
+            <strong>Driver LED</strong><span>PWM, corriente constante</span>
+          </article>
+          <article class="block controls-block" data-block="keys" style="--x: 2%; --y: 78%">
+            <strong>Teclado / IR</strong><span>Usuario y mando</span>
+          </article>
+          <article class="block mcu" data-block="mcu" style="--x: 48%; --y: 78%">
+            <strong>Microcontrolador</strong><span>I²C, protecciones, EDID</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="explanation" aria-labelledby="explanationTitle">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Análisis guiado</p>
+            <h2 id="explanationTitle">Qué está ocurriendo</h2>
+          </div>
+        </div>
+        <ol id="timeline" class="timeline"></ol>
+        <div class="fault-card" id="faultCard">
+          <h3>Diagnóstico</h3>
+          <p>Selecciona una avería para relacionar síntomas, bloques implicados y medidas esperables.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
