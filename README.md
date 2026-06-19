@@ -9,6 +9,7 @@ Aplicación web estática para explicar el funcionamiento de un monitor LCD/LED 
 - Animación del flujo de alimentación, procesado, temporización, iluminación e imagen visible.
 - Modo paso a paso para explicar cada etapa en clase.
 - Escenarios de avería con síntomas, bloques implicados y medidas esperables.
+- Guías de reparación por avería con pasos de comprobación, sustitución segura e instrumentación recomendada.
 - Medidas simuladas de tensión, frecuencia horizontal, frecuencia vertical y porcentaje de backlight.
 
 ## Uso local
