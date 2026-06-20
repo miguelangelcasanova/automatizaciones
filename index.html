@@ -30,7 +30,7 @@
         <div class="section-title">
           <div>
             <p class="eyebrow">Vista funcional</p>
-            <h2 id="monitorTitle">Monitor LCD / LED</h2>
+            <h2 id="monitorTitle">Monitor <span class="term" data-term="LCD" tabindex="0">LCD</span> / <span class="term" data-term="LED" tabindex="0">LED</span></h2>
           </div>
           <button id="powerButton" class="power-button" type="button" aria-pressed="true">⏻ Encendido</button>
         </div>
@@ -137,33 +137,46 @@
           </svg>
 
           <article class="block source" data-block="ac" style="--x: 2%; --y: 12%">
-            <strong>Red AC</strong><span>230 Vca · filtro EMI</span>
+            <strong>Red AC</strong><span>230 Vca · filtro <span class="term" data-term="EMI" tabindex="0">EMI</span></span>
           </article>
           <article class="block power" data-block="psu" style="--x: 25%; --y: 12%">
-            <strong>Fuente SMPS</strong><span>Stand-by, PFC, 12/24 V</span>
+            <strong>Fuente <span class="term" data-term="SMPS" tabindex="0">SMPS</span></strong><span>Stand-by, <span class="term" data-term="PFC" tabindex="0">PFC</span>, 12/24 V</span>
           </article>
           <article class="block processor" data-block="main" style="--x: 48%; --y: 12%">
-            <strong>Placa main</strong><span>Scaler, ADC, HDMI, OSD</span>
+            <strong>Placa main</strong><span><span class="term" data-term="Scaler" tabindex="0">Scaler</span>, <span class="term" data-term="ADC" tabindex="0">ADC</span>, <span class="term" data-term="HDMI" tabindex="0">HDMI</span>, <span class="term" data-term="OSD" tabindex="0">OSD</span></span>
           </article>
           <article class="block timing" data-block="tcon" style="--x: 71%; --y: 12%">
-            <strong>T-CON</strong><span>LVDS/eDP → filas y columnas</span>
+            <strong><span class="term" data-term="T-CON" tabindex="0">T-CON</span></strong><span><span class="term" data-term="LVDS" tabindex="0">LVDS</span>/<span class="term" data-term="eDP" tabindex="0">eDP</span> → filas y columnas</span>
           </article>
           <article class="block panel-block" data-block="panel" style="--x: 91%; --y: 12%">
-            <strong>Panel LCD</strong><span>TFT + filtros RGB</span>
+            <strong>Panel <span class="term" data-term="LCD" tabindex="0">LCD</span></strong><span><span class="term" data-term="TFT" tabindex="0">TFT</span> + filtros <span class="term" data-term="RGB" tabindex="0">RGB</span></span>
           </article>
           <article class="block input" data-block="input" style="--x: 2%; --y: 58%">
-            <strong>Entrada vídeo</strong><span>HDMI / DP / VGA</span>
+            <strong>Entrada vídeo</strong><span><span class="term" data-term="HDMI" tabindex="0">HDMI</span> / <span class="term" data-term="DP" tabindex="0">DP</span> / <span class="term" data-term="VGA" tabindex="0">VGA</span></span>
           </article>
           <article class="block light" data-block="backlight" style="--x: 48%; --y: 58%">
-            <strong>Driver LED</strong><span>PWM, corriente constante</span>
+            <strong>Driver LED</strong><span><span class="term" data-term="PWM" tabindex="0">PWM</span>, corriente constante</span>
           </article>
           <article class="block controls-block" data-block="keys" style="--x: 2%; --y: 78%">
             <strong>Teclado / IR</strong><span>Usuario y mando</span>
           </article>
           <article class="block mcu" data-block="mcu" style="--x: 48%; --y: 78%">
-            <strong>Microcontrolador</strong><span>I²C, protecciones, EDID</span>
+            <strong>Microcontrolador</strong><span><span class="term" data-term="I²C" tabindex="0">I²C</span>, protecciones, <span class="term" data-term="EDID" tabindex="0">EDID</span></span>
           </article>
         </div>
+      </section>
+
+
+
+      <section class="glossary-panel" aria-labelledby="glossaryTitle">
+        <div class="section-title compact">
+          <div>
+            <p class="eyebrow">Apoyo conceptual</p>
+            <h2 id="glossaryTitle">Glosario técnico</h2>
+          </div>
+        </div>
+        <p class="glossary-intro">Pasa el cursor o usa el foco de teclado sobre los términos subrayados para ver su definición. También puedes consultar aquí el listado completo.</p>
+        <div id="glossaryList" class="glossary-list" aria-live="polite"></div>
       </section>
 
       <section class="explanation" aria-labelledby="explanationTitle">

@@ -10,6 +10,7 @@ Aplicación web estática para explicar el funcionamiento de un monitor LCD/LED 
 - Modo paso a paso para explicar cada etapa en clase.
 - Escenarios de avería con síntomas, bloques implicados y medidas esperables.
 - Guías de reparación por avería con pasos de comprobación, sustitución segura e instrumentación recomendada.
+- Globos de ayuda y glosario para términos técnicos como T-CON, LVDS, PWM, ESR o EDID.
 - Medidas simuladas de tensión, frecuencia horizontal, frecuencia vertical y porcentaje de backlight.
 
 ## Uso local

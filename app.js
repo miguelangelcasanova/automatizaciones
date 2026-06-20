@@ -1,3 +1,25 @@
+const glossary = {
+  ADC: 'Conversor analógico-digital. Convierte señales analógicas, como VGA, en datos digitales para el scaler.',
+  DP: 'DisplayPort. Interfaz digital de vídeo y audio usada en monitores modernos.',
+  EDID: 'Datos que el monitor entrega a la fuente de vídeo para informar de resoluciones, frecuencias y capacidades soportadas.',
+  EMI: 'Interferencia electromagnética. El filtro EMI reduce ruido conducido entre la red eléctrica y la fuente.',
+  ESR: 'Resistencia serie equivalente de un condensador. Si sube, aumenta el rizado y aparecen fallos de arranque o parpadeo.',
+  HDMI: 'Interfaz multimedia de alta definición. Transporta vídeo digital, audio y datos auxiliares.',
+  'I²C': 'Bus serie de control usado para comunicar microcontrolador, memorias EDID, sensores y circuitos auxiliares.',
+  LCD: 'Pantalla de cristal líquido. Modula la luz de fondo mediante subpíxeles y filtros de color.',
+  LED: 'Diodo emisor de luz. En monitores LCD suele formar la retroiluminación del panel.',
+  LVDS: 'Señalización diferencial de baja tensión. En muchos monitores transporta vídeo desde la placa main a la T-CON.',
+  OSD: 'On-Screen Display. Menú o información superpuesta generada por la placa main.',
+  PFC: 'Corrección del factor de potencia. Etapa de fuente que mejora el consumo de red y estabiliza el bus primario.',
+  PWM: 'Modulación por ancho de pulso. Técnica habitual para regular brillo de la retroiluminación LED.',
+  RGB: 'Modelo de color rojo, verde y azul usado por subpíxeles del panel para formar la imagen.',
+  SMPS: 'Fuente conmutada. Convierte la entrada de red en tensiones continuas reguladas para los bloques del monitor.',
+  Scaler: 'Procesador de vídeo que adapta resolución, frecuencia y formato de la señal de entrada al panel.',
+  'T-CON': 'Timing Controller. Placa que recibe vídeo LVDS/eDP y genera las señales temporizadas para filas y columnas del panel.',
+  TFT: 'Transistor de película fina. Cada subpíxel LCD se controla con transistores integrados en la matriz activa.',
+  eDP: 'Embedded DisplayPort. Enlace digital interno usado entre placa main/T-CON y panel en equipos recientes.'
+};
+
 const steps = [
   { title: '1. Alimentación', text: 'La red AC se filtra y la fuente conmutada genera tensiones de stand-by, lógica y potencia.', blocks: ['ac', 'psu'], links: ['ac-psu'] },
   { title: '2. Procesado de vídeo', text: 'La placa main detecta la entrada, lee EDID, escala la imagen y genera OSD.', blocks: ['input', 'main', 'mcu'], links: ['input-main', 'keys-mcu', 'mcu-main', 'psu-main'] },
@@ -104,6 +126,41 @@ const faults = {
   }
 };
 
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char]);
+}
+
+function enhanceTerms(value) {
+  let html = escapeHTML(value);
+  Object.keys(glossary)
+    .sort((a, b) => b.length - a.length)
+    .forEach((term) => {
+      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      html = html.replace(new RegExp(`\\b${escapedTerm}\\b`, 'g'), `<span class="term" data-term="${term}" tabindex="0">${term}</span>`);
+    });
+  return html;
+}
+
+function hydrateGlossaryTerms(root = document) {
+  root.querySelectorAll('.term').forEach((node) => {
+    const term = node.dataset.term;
+    const definition = glossary[term];
+    if (!definition) return;
+    node.setAttribute('role', 'button');
+    node.setAttribute('aria-label', `${term}: ${definition}`);
+    node.setAttribute('data-definition', definition);
+    node.setAttribute('title', definition);
+  });
+}
+
+function renderGlossary() {
+  $('#glossaryList').innerHTML = Object.entries(glossary)
+    .sort(([a], [b]) => a.localeCompare(b, 'es'))
+    .map(([term, definition]) => `<article><h3>${term}</h3><p>${definition}</p></article>`)
+    .join('');
+}
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 let currentStep = -1;
@@ -111,7 +168,8 @@ let timer = null;
 let powered = true;
 
 function renderTimeline() {
-  $('#timeline').innerHTML = steps.map((step, index) => `<li data-step="${index}"><strong>${step.title}</strong><p>${step.text}</p></li>`).join('');
+  $('#timeline').innerHTML = steps.map((step, index) => `<li data-step="${index}"><strong>${step.title}</strong><p>${enhanceTerms(step.text)}</p></li>`).join('');
+  hydrateGlossaryTerms($('#timeline'));
 }
 
 function setStep(index) {
@@ -162,13 +220,14 @@ function updateFault() {
   $('#globalStatusDot').className = `status-dot ${powered ? (fault.severity === 'ok' ? '' : fault.severity) : 'danger'}`;
   $('#faultCard').innerHTML = `
     <h3>Diagnóstico: ${fault.title}</h3>
-    <p>${fault.text}</p>
+    <p>${enhanceTerms(fault.text)}</p>
     <div class="repair-panel">
       <h4>${fault.repairTitle}</h4>
-      <ol>${fault.repair.map((item) => `<li>${item}</li>`).join('')}</ol>
+      <ol>${fault.repair.map((item) => `<li>${enhanceTerms(item)}</li>`).join('')}</ol>
       <p class="tools"><strong>Instrumentación:</strong> ${fault.tools.join(' · ')}</p>
       <p class="safety">⚠ Seguridad: trabajar sin tensión cuando se sustituya un componente y extremar precauciones en primario de fuente y condensadores cargados.</p>
     </div>`;
+  hydrateGlossaryTerms($('#faultCard'));
   $('#voltageValue').textContent = powered ? fault.values[0] : '0.0 V';
   $('#hFreqValue').textContent = powered ? fault.values[1] : '0 kHz';
   $('#vFreqValue').textContent = powered ? fault.values[2] : '0 Hz';
@@ -186,5 +245,7 @@ $('#resetButton').addEventListener('click', () => { stopAnimation(); currentStep
 $('#powerButton').addEventListener('click', () => { powered = !powered; $('#powerButton').textContent = powered ? '⏻ Encendido' : '⏻ Apagado'; $('#powerButton').setAttribute('aria-pressed', String(powered)); updateFault(); });
 ['inputSignal', 'brightness', 'contrast', 'colorTemp', 'faultMode'].forEach((id) => $(`#${id}`).addEventListener('input', updateFault));
 
+renderGlossary();
+hydrateGlossaryTerms();
 renderTimeline();
 updateFault();
